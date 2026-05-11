@@ -48,32 +48,45 @@ function useLoginBroker(tenantName, platform, onSessionReceived, onErrorReceived
   }
 
   function getLoginMode() {
+    console.group('LoginBroker: Determining Mode');
     try {
-      console.warn('Unable to determine login broker mode. Falling back to popup.', error);
       const script = document.currentScript || findLoginBrokerScript();
-      if (!script || !script.src) {
+      
+      if (!script) {
+        console.warn('No script tag found. Defaulting to popup.');
+        console.groupEnd();
         return 'popup';
       }
 
+      console.log('Found script tag:', script.src);
       const scriptUrl = new URL(script.src, window.location.href);
       const configuredMode = scriptUrl.searchParams.get('mode') || scriptUrl.searchParams.get('flow');
+      
+      console.log('Detected mode from URL params:', configuredMode);
 
       if (configuredMode === 'redirect') {
+        console.log('Mode set to REDIRECT');
+        console.groupEnd();
         return 'redirect';
       }
 
+      console.log('Mode defaulting to POPUP');
+      console.groupEnd();
       return 'popup';
     } catch (error) {
-      console.warn('Unable to determine login broker mode. Falling back to popup.', error);
-      return 'redirect';
+      console.error('Error in getLoginMode:', error);
+      console.groupEnd();
+      return 'popup'; 
     }
   }
 
   function findLoginBrokerScript() {
     const scripts = document.getElementsByTagName('script');
+    console.log(`Searching through ${scripts.length} script tags...`);
 
     for (let i = scripts.length - 1; i >= 0; i--) {
       const script = scripts[i];
+      // Check for .v2 specifically since that is your current file
       if (script.src && script.src.indexOf('loginbroker.v2.js') !== -1) {
         return script;
       }
