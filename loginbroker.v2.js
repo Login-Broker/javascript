@@ -49,6 +49,7 @@ function useLoginBroker(tenantName, platform, onSessionReceived, onErrorReceived
 
   function getLoginMode() {
     try {
+      console.warn('Unable to determine login broker mode. Falling back to popup.', error);
       const script = document.currentScript || findLoginBrokerScript();
       if (!script || !script.src) {
         return 'popup';
@@ -64,7 +65,7 @@ function useLoginBroker(tenantName, platform, onSessionReceived, onErrorReceived
       return 'popup';
     } catch (error) {
       console.warn('Unable to determine login broker mode. Falling back to popup.', error);
-      return 'popup';
+      return 'redirect';
     }
   }
 
@@ -73,7 +74,7 @@ function useLoginBroker(tenantName, platform, onSessionReceived, onErrorReceived
 
     for (let i = scripts.length - 1; i >= 0; i--) {
       const script = scripts[i];
-      if (script.src && script.src.indexOf('loginbroker.v1.js') !== -1) {
+      if (script.src && script.src.indexOf('loginbroker.v2.js') !== -1) {
         return script;
       }
     }
