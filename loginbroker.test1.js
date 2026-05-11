@@ -87,7 +87,7 @@ function useLoginBroker(tenantName, platform, onSessionReceived, onErrorReceived
     for (let i = scripts.length - 1; i >= 0; i--) {
       const script = scripts[i];
       // Check for .v2 specifically since that is your current file
-      if (script.src && script.src.indexOf('loginbroker.v2.js') !== -1) {
+      if (script.src && script.src.indexOf('loginbroker') !== -1) {
         return script;
       }
     }
